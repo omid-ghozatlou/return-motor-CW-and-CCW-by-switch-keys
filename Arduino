@@ -1,0 +1,56 @@
+git remote add origin https://github.com/omid-ghozatlou/return-motor-CW-and-CCW-by-switch-keys.git
+git push -u origin master
+
+// Arduino uno L298N is attached one DC_motor and contlor by three swich keys
+#include <L298N.h>
+
+// definition of motor ports and Arduino ports
+#define ENA 3
+#define IN1 2 
+#define IN2 4
+
+L298N motor1 (ENA,IN1,IN2);
+
+#define SW_key 0
+
+// definition of microswiches SW1 & SW2
+int SW1 = A1;
+int SW2 = A2;
+ 
+void setup() {
+//  digitalWrite (SW_key,HIGH);
+  pinMode(SW1, INPUT);
+//   analogWrite(SW1, HIGH);
+  pinMode(SW2, INPUT);
+//  analogWrite(SW2, HIGH);
+  Serial.begin(9600);
+}
+
+void loop() 
+{
+  if ( digitalRead(SW_key) == LOW)
+  { 
+        while (analogRead(SW2) == LOW)
+        {
+          Serial.print("SWITCH"); delay(100);
+          motor1.forward();
+          Serial.print("MOTOR1 START");
+          motor1.setSpeed(255);
+          Serial.print("motor forward" , "\n"); delay (100);
+        }
+  
+      motor1.stop();
+  
+        while (analogRead(SW1) == LOW)
+          {
+        Serial.print("SWITCH1","\n"); delay(1000);
+        motor1.backward();
+        motor1.setSpeed(255); delay(100);
+          Serial.print("motor backward", "\n"); delay (100);
+          }    
+      
+      Serial.print("SWITCH2", "\n"); delay (100);
+      motor1.stop();
+      Serial.print("END", "\n"); delay (100);
+  }
+}
